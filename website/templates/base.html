@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+
+{# MOST IMPORTANT NOTICE! - In order to comment in JINJA TEMPLATE, use POUND SIGN #}
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {# import bootstrap: CSS framework #}
+        {# below link is called CDN(content delivery network)-> load custom CSS and Javascript without downloading file #}
+        {# our case, loading CSS #}
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+            integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+            crossorigin="anonymous"            
+        />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            crossorigin="anonymous"
+        />
+        
+        {# Defining a block in this base template that can be overwritten in a child template #}
+        {# This can be override anything between {%block title%}and{%endblock%} #}
+        <title>{% block title %}Home{% endblock %}</title>
+
+    </head>
+    <body>
+        {# Define 'navbar' here. In order to check the detail of navbar, check the bootstrap related to navbar #}
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            {# Define buttons that extend sizes to fit the navbar #}
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#navbar"
+            >
+                {# Load icons. So, if we press the icon, it'll toggle the button #}
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            {# Define navigation items in navbar #}
+            {# Going to have collapsable navbar and define the items in the navbar #}
+            <div class="collapse navbar-collapse" id="navbar"> 
+                <div class="navbar-nav">
+                    {# Only show home and logout if the user signed in #}
+                    {% if user.is_authenticated %}
+
+                    {# Define the items here #}
+                    <a class="nav-item nav-link" id="home" href="/">Home</a>
+                    <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
+                    {# Only show login and sign-up if the user is not signed in #}
+                    {% else %}
+                    <a class="nav-item nav-link" id="login" href="/login">Login</a>
+                    <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        {# Codes for display messages from auth.py #}
+        {% with messages = get_flashed_messages(with_categories=true) %} {# 'True' in jinja template starts with lower t! #}
+        {# Get all of the messages with their categories that we have flashed #}
+
+        {# Loop through all of the messages becuase we could have multiple messages. Then display them #}
+        {% if messages %}
+            {% for category, message in messages %}
+            {% if category == 'error' %}
+
+            {# When it's an error message #}
+            <div class="alert alert-danger alter-dismissable fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span> {# Icon. Special character fancy X #}
+                </button>
+            </div>
+
+            {# When it's a success message #}
+            {% else %}
+            <div class="alert alert-success alter-dismissable fade show" role="alert"> {# alert-success changes the background color #}
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span> {# Icon. Special character fancy X #}
+                </button>
+            </div>
+
+            {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {# Since I put the flash messages in base.html, it'll work on any of pages #}
+
+
+        <div class="container"> {# container make the content floating off of the boarder of the screen #}
+            {% block content %}
+
+            {% endblock %}
+
+        </div>
+
+
+        {# These load bootstrap, a CSS framework #}
+        <script
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"
+        ></script>
+
+        {# Anthing DO NOT change like Javascript files, images, or CSS files, are located in the STATIC FOLDER #}
+        {# In order to load those static files, do like followings #}
+        {# 'url_for' is a python function. Inside of {{}}, use Pythonic expression #}
+        {# Below script tag is referencing this 'index.js' file in the static folder #}
+        <script
+            type="text/javascript"
+            src="{{ url_for('static', filename='index.js') }}"
+        ></script>
+
+    </body>
+</html>

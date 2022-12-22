@@ -83,10 +83,18 @@ def sign_up():
             
             # add user to database
             db.session.add(new_user)
-            # There are some changes, update it
+            # Notify to the database there are some changes, update it
             db.session.commit()
 
-            login_user(user, remember=True) # Now, the current status is logged in. So, remember this user
+            # login_user(user, remember=True) # (OLD) Now, the current status is logged in. So, remember this user
+            login_user(new_user, remember=True)
+            # (Fixed) Need to rememeber the new user's login status so parameter should be 'new_user' not the 'user' for general use
+            
+            # File "C:\Users\Jun\AppData\Roaming\Python\Python311\site-packages\flask_login\utils.py", line 180, in login_user
+            # if not force and not user.is_active:
+            #                     ^^^^^^^^^^^^^^
+            # AttributeError: 'NoneType' object has no attribute 'is_active'
+
 
             flash('Account created!', category='success')   # The messages need to be displayed -> Go to base.html and add codes for it
 
